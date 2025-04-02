@@ -1,7 +1,7 @@
 ---
-description: Rule to start wripe mcp server python
+description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 # MCP Python SDK
 

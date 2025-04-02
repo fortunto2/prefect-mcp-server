@@ -1,9 +1,9 @@
 [project]
 name = "prefect-mcp-server"
-version = "1.0.0"
+version = "1.0.1"
 description = "MCP server for interacting with the Prefect API"
 authors = [
-    { name = "Your Name", email = "you@example.com" },
+    { name = "Rusty", email = "rust.starman@gmail.com" },
 ]
 dependencies = [
     "mcp[cli]", # Use the correct package name with cli extra
@@ -12,6 +12,21 @@ dependencies = [
 requires-python = ">=3.10"
 readme = "README.md"
 license = { text = "MIT"}
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/fortunto2/prefect-mcp-server"
+Repository = "https://github.com/fortunto2/prefect-mcp-server"
+
+[project.scripts]
+prefect-mcp-server = "prefect_mcp_server_pkg.server:main_run"
 
 [build-system]
 requires = ["hatchling"]
@@ -24,5 +39,9 @@ dev-dependencies = []
 [tool.hatch.metadata]
 allow-direct-references = true
 
+dev-dependencies = [
+    "twine"
+]
+
 [tool.hatch.build.targets.wheel]
-packages = ["src/prefect_mcp_server"] 
+packages = ["prefect_mcp_server_pkg"] 

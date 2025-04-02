@@ -1,11 +1,9 @@
 {
   "mcpServers": {
     "prefect": {
-      "command": "uv",
+      "command": "uvx",
       "args": [
-        "run",
-        "python",
-        "prefect_mcp_server.py"
+        "prefect-mcp-server"
       ],
       "timeout": 60000,
       "env": {}

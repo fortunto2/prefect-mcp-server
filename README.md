@@ -1,80 +1,65 @@
 # Prefect MCP Server
 
-This repository contains an MCP (Meta Control Protocol) server that integrates with the Prefect API.
-It allows controlling Prefect flows, flow runs, and deployments via MCP commands.
+This repository provides a Prefect MCP server configuration using the `prefect-mcp-server` package with a reliable running mechanism via `uvx`. The configuration is tailored for use with the Cursor IDE.
 
-The server is built using the `mcp` library (specifically `FastMCP`).
+## Prerequisites
 
-## Features
+- Python 3.9 or newer.
+- A preferred virtual environment tool (such as uv) for managing Python environments.
+- Prefect 3 (see [Prefect Documentation](https://docs.prefect.io/v3/get-started/install) for installation instructions).
 
-- List Prefect flows, flow runs, and deployments.
-- Filter flows, flow runs, and deployments based on criteria.
-- Create new flow runs for specific deployments.
-- Uses `httpx` for asynchronous communication with the Prefect API.
+## Installation
 
-## Requirements
+Create and activate your virtual environment, then install Prefect MCP Server:
 
-- Python 3.8+
-- `uv` (for environment management and installation)
+```bash
+uv venv --python 3.12 && source .venv/bin/activate
+uv pip install -U prefect-mcp-server
+```
 
-## Setup and Running
+## Configuration
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/<your_github_username>/prefect-mcp-server.git
-    cd prefect-mcp-server
-    ```
+The server is configured via the `.cursor/mcp.json` file. The updated configuration is as follows:
 
-2.  **Create a virtual environment and install dependencies using uv:**
-    ```bash
-    uv venv
-    uv pip install -r requirements.txt
-    # or directly from pyproject.toml
-    # uv pip install -e . 
-    ```
-    Activate the environment:
-    ```bash
-    source .venv/bin/activate 
-    ```
-
-3.  **Configure Prefect API:**
-    Set the following environment variables (e.g., in a `.env` file or directly):
-    ```bash
-    export PREFECT_API_URL="http://your-prefect-instance:4200/api" # Replace with your Prefect API URL
-    export PREFECT_API_KEY="your_prefect_api_key"              # Optional: Your Prefect API key if required
-    ```
-    If you are using Prefect Cloud, the URL is typically `https://api.prefect.cloud/api/accounts/{account_id}/workspaces/{workspace_id}`.
-
-4.  **Run the MCP server:**
-    ```bash
-    python prefect_mcp_server.py
-    ```
-
-The server will start and listen for MCP commands on standard input/output.
-
-## Usage
-
-You can interact with the server using an MCP client. Here are examples of commands:
-
-- **List flows:**
-  ```json
-  {"mcp_command": "list_flows", "params": {"limit": 10}}
-  ```
-
-- **List flow runs:**
-  ```json
-  {"mcp_command": "list_flow_runs", "params": {"limit": 5}}
-  ```
-
-- **Create a flow run:**
-  ```json
-  {
-    "mcp_command": "create_flow_run",
-    "params": {
-      "deployment_id": "your-deployment-id",
-      "parameters": {"param1": "value1"}
+```json
+{
+  "mcpServers": {
+    "prefect": {
+      "command": "uvx",
+      "args": [
+        "prefect-mcp-server"
+      ],
+      "env": {}
     }
   }
-  ```
+}
+```
 
-Refer to the `prefect_mcp_server.py` script for the full list of available commands and their parameters. 
+This configuration ensures that the server uses the `uvx` command with the exact package version installed via `uv pip install`. This approach provides enhanced reliability and consistency in your development environment.
+
+## Environment Variables
+
+Set the following environment variables to configure your Prefect environment. You can create a file named `.env` in the project root with entries such as:
+
+```bash
+PREFECT_API_URL=http://localhost:4200/api
+```
+
+Additionally, if needed, set other environment variables like `PREFECT_API_KEY` to authenticate with your Prefect server or Prefect Cloud.
+
+## Running the Server
+
+To start the server, you can run the following command:
+
+```bash
+uv run <script>
+```
+
+Alternatively, if you are using the Cursor IDE with its configuration, the server will be automatically invoked with the command specified in `.cursor/mcp.json`.
+
+## Additional Information
+
+- For further details on Prefect installation and usage, please refer to the [Prefect Documentation](https://docs.prefect.io/).
+- Use `uv run` for running scripts within the configured environment as recommended by Cursor.
+
+Happy coding! 

@@ -229,8 +229,7 @@ async def create_flow_run(
     return await client.create_flow_run(deployment_id, parameters)
 
 
-# --- Main entry point for running the server ---
-if __name__ == "__main__":
+def main_run():
     print("Starting Prefect MCP Server using FastMCP...", file=sys.stderr)
     print(f"Connecting to Prefect API: {PREFECT_API_URL}", file=sys.stderr)
     if PREFECT_API_KEY:
@@ -240,3 +239,8 @@ if __name__ == "__main__":
 
     # mcp.run() starts the server and handles the stdio transport
     mcp_server.run()
+
+
+# --- Main entry point for running the server ---
+if __name__ == "__main__":
+    main_run()
