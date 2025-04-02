@@ -42,7 +42,7 @@ async def prefect_api_lifespan(
 
 
 # --- MCP Server Definition with FastMCP ---
-mcp_server = FastMCP(
+mcp = FastMCP(
     name="prefect",  # Server name
     version="1.0.0",  # Server version
     lifespan=prefect_api_lifespan,  # Specify the context manager
@@ -51,7 +51,7 @@ mcp_server = FastMCP(
 # --- Tool Definitions with @mcp.tool() decorator ---
 
 
-@mcp_server.tool()
+@mcp.tool()
 async def list_flows(ctx: Context, limit: int = 20) -> Dict[str, Any]:
     """Get a list of flows from the Prefect API.
 
@@ -63,7 +63,7 @@ async def list_flows(ctx: Context, limit: int = 20) -> Dict[str, Any]:
         return {"flows": [flow.model_dump() for flow in flows]}
 
 
-@mcp_server.tool()
+@mcp.tool()
 async def list_flow_runs(ctx: Context, limit: int = 20) -> Dict[str, Any]:
     """Get a list of flow runs from the Prefect API.
 
@@ -75,7 +75,7 @@ async def list_flow_runs(ctx: Context, limit: int = 20) -> Dict[str, Any]:
         return {"flow_runs": [run.model_dump() for run in flow_runs]}
 
 
-@mcp_server.tool()
+@mcp.tool()
 async def list_deployments(ctx: Context, limit: int = 20) -> Dict[str, Any]:
     """Get a list of deployments from the Prefect API.
 
@@ -87,7 +87,7 @@ async def list_deployments(ctx: Context, limit: int = 20) -> Dict[str, Any]:
         return {"deployments": [deployment.model_dump() for deployment in deployments]}
 
 
-@mcp_server.tool()
+@mcp.tool()
 async def filter_flows(ctx: Context, filter_criteria: Dict[str, Any]) -> Dict[str, Any]:
     """Filter flows based on specified criteria.
 
@@ -100,7 +100,7 @@ async def filter_flows(ctx: Context, filter_criteria: Dict[str, Any]) -> Dict[st
         return {"flows": [flow.model_dump() for flow in flows]}
 
 
-@mcp_server.tool()
+@mcp.tool()
 async def filter_flow_runs(
     ctx: Context, filter_criteria: Dict[str, Any]
 ) -> Dict[str, Any]:
@@ -115,7 +115,7 @@ async def filter_flow_runs(
         return {"flow_runs": [run.model_dump() for run in flow_runs]}
 
 
-@mcp_server.tool()
+@mcp.tool()
 async def filter_deployments(
     ctx: Context, filter_criteria: Dict[str, Any]
 ) -> Dict[str, Any]:
@@ -130,7 +130,7 @@ async def filter_deployments(
         return {"deployments": [deployment.model_dump() for deployment in deployments]}
 
 
-@mcp_server.tool()
+@mcp.tool()
 async def create_flow_run(
     ctx: Context, deployment_id: str, parameters: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
@@ -164,7 +164,7 @@ def main_run():
         print("Using Prefect API Key: NO", file=sys.stderr)
 
     # mcp.run() starts the server and handles the stdio transport
-    mcp_server.run()
+    mcp.run()
 
 
 # --- Main entry point for running the server ---
