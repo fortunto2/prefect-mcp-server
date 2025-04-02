@@ -8,6 +8,7 @@ authors = [
 dependencies = [
     "mcp[cli]", # Use the correct package name with cli extra
     "httpx>=0.24.0",
+    "prefect-client>=1.0.0",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
