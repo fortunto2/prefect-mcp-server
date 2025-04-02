@@ -1,0 +1,126 @@
+---
+description: Prefect MCP Server Usage
+globs: 
+alwaysApply: false
+---
+# Prefect MCP Server Usage with Cursor
+
+## Overview
+
+This rule provides guidance on how to work with the Prefect MCP server in the Cursor IDE, incorporating the Model Context Protocol (MCP) to interact with Prefect workflows, deployments, and flow runs.
+
+## Prerequisites
+
+- Python 3.10 or higher
+- Prefect 3.0+ installed
+- MCP CLI tools installed
+- Cursor IDE
+
+## Setup Environment
+
+### Installation
+
+Install the required packages:
+
+```bash
+uv pip install prefect-mcp-server mcp[cli] prefect>=3.0.0
+```
+
+### Environment Variables
+
+Configure the Prefect API connection:
+
+```bash
+export PREFECT_API_URL="http://localhost:4200/api"
+export PREFECT_API_KEY="your_api_key_if_needed"
+```
+
+## Running the Prefect MCP Server
+
+There are multiple ways to run the Prefect MCP server:
+
+### From Command Line
+
+```bash
+prefect-mcp-server
+```
+
+### Using MCP Dev
+
+For development and testing:
+
+```bash
+mcp dev prefect_mcp_server_pkg/server.py
+```
+
+### Integration with Cursor
+
+Cursor supports MCP tools, allowing you to interact with the Prefect API through the Prefect MCP server.
+
+## Available Tools
+
+The server provides tools for:
+
+### Flow Management
+
+- Get flow by ID (`get_flow_by_id`)
+- Get flow by name (`get_flow_by_name`)
+- List flows (`list_flows`)
+- Search flows (`search_flows`)
+
+### Flow Run Operations
+
+- Get flow run by ID (`get_flow_run_by_id`)
+- List flow runs (`list_flow_runs`)
+- Search flow runs by state (`search_flow_runs_by_state`)
+- Cancel flow run (`cancel_flow_run`)
+
+### Deployment Operations
+
+- Get deployment by ID (`get_deployment_by_id`)
+- Get deployment by name (`get_deployment_by_name`)
+- List deployments (`list_deployments`)
+- Search deployments by status (`search_deployments_by_status`)
+- Create flow run from deployment (`create_flow_run_from_deployment`)
+
+## Using in Cursor
+
+Cursor supports MCP tools natively, allowing you to interact with your Prefect workflows directly from the editor.
+
+### Example Usage
+
+1. Start the Prefect MCP server
+2. Open Cursor IDE
+3. Connect to the MCP server (usually automatic if running locally)
+4. Use the available tools through Claude AI integration in Cursor
+
+## Prefect 3.0 Compatibility Notes
+
+When working with Prefect 3.0 in Cursor, be aware of the following API changes:
+
+- Use `flow_filter=` instead of `filter=` for flow operations
+- Use `flow_run_filter=` instead of `filter=` for flow run operations
+- Use `deployment_filter=` instead of `filter=` for deployment operations
+
+## Troubleshooting
+
+If you encounter issues:
+
+1. Ensure that the Prefect API is running and accessible
+2. Check that the environment variables are correctly set
+3. Verify the server is running with `mcp dev prefect_mcp_server_pkg/server.py`
+4. Review the logs for any error messages
+
+## Updating the Package
+
+To update to the latest version:
+
+```bash
+uv pip install -U prefect-mcp-server
+```
+
+## Further Resources
+
+- [MCP Documentation](mdc:https:/modelcontextprotocol.io)
+- [Prefect Documentation](mdc:https:/docs.prefect.io/v3)
+- [Cursor IDE Documentation](mdc:https:/docs.cursor.com) 
