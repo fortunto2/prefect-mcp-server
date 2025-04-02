@@ -85,9 +85,9 @@ async def get_flow_by_name(ctx: Context, name: str) -> Dict[str, Any]:
 
     async with get_client() as client:
         try:
-            # Use filter dict directly
-            filter_obj = {"name": {"equals": name}}
-            flows = await client.read_flows(filter=filter_obj)
+            # Use FlowFilter to find flow by name
+            filter_obj = FlowFilter(name={"equals": name})
+            flows = await client.read_flows(flows=filter_obj)
 
             if not flows:
                 return {"error": f"No flow found with name: {name}"}
@@ -134,7 +134,7 @@ async def search_flows(
         filter_dict["tags"] = {"all_": tags}
 
     async with get_client() as client:
-        flows = await client.read_flows(filter=filter_dict, limit=limit)
+        flows = await client.read_flows(flows=FlowFilter(**filter_dict), limit=limit)
         return {"flows": [flow.model_dump() for flow in flows], "count": len(flows)}
 
 
@@ -178,8 +178,9 @@ async def list_flow_runs(
         filter_dict["flow_id"] = {"equals": flow_id}
 
     async with get_client() as client:
+        flow_runs_filter = FlowRunFilter(**filter_dict) if filter_dict else None
         flow_runs = await client.read_flow_runs(
-            filter=filter_dict, limit=limit, offset=offset
+            flow_runs=flow_runs_filter, limit=limit, offset=offset
         )
         return {
             "flow_runs": [run.model_dump() for run in flow_runs],
@@ -210,7 +211,8 @@ async def search_flow_runs_by_state(
         filter_dict["state"] = {"name": {"equals": state_name}}
 
     async with get_client() as client:
-        flow_runs = await client.read_flow_runs(filter=filter_dict, limit=limit)
+        flow_runs_filter = FlowRunFilter(**filter_dict) if filter_dict else None
+        flow_runs = await client.read_flow_runs(flow_runs=flow_runs_filter, limit=limit)
         return {
             "flow_runs": [run.model_dump() for run in flow_runs],
             "count": len(flow_runs),
@@ -276,11 +278,10 @@ async def get_deployment_by_name(ctx: Context, name: str) -> Dict[str, Any]:
             flow_name, deployment_name = name.split("/", 1)
 
             # Use filters to find deployment by name
-            filter_dict = {
-                "name": {"equals": deployment_name},
-                "flow_name": {"equals": flow_name},
-            }
-            deployments = await client.read_deployments(filter=filter_dict)
+            deployment_filter = DeploymentFilter(
+                name={"equals": deployment_name}, flow_name={"equals": flow_name}
+            )
+            deployments = await client.read_deployments(deployments=deployment_filter)
 
             if not deployments:
                 return {"error": f"No deployment found with name: {name}"}
@@ -308,8 +309,9 @@ async def list_deployments(
         filter_dict["flow_id"] = {"equals": flow_id}
 
     async with get_client() as client:
+        deployment_filter = DeploymentFilter(**filter_dict) if filter_dict else None
         deployments = await client.read_deployments(
-            filter=filter_dict, limit=limit, offset=offset
+            deployments=deployment_filter, limit=limit, offset=offset
         )
         return {
             "deployments": [depl.model_dump() for depl in deployments],
@@ -333,7 +335,10 @@ async def search_deployments_by_status(
         filter_dict["is_schedule_active"] = {"equals": is_schedule_active}
 
     async with get_client() as client:
-        deployments = await client.read_deployments(filter=filter_dict, limit=limit)
+        deployment_filter = DeploymentFilter(**filter_dict) if filter_dict else None
+        deployments = await client.read_deployments(
+            deployments=deployment_filter, limit=limit
+        )
         return {
             "deployments": [depl.model_dump() for depl in deployments],
             "count": len(deployments),
@@ -389,7 +394,7 @@ async def filter_flows(ctx: Context, filter_criteria: Dict[str, Any]) -> Dict[st
                          Example: {"flows": {"tags": {"all_": ["production"]}}}
     """
     async with get_client() as client:
-        flows = await client.read_flows(filter=filter_criteria)
+        flows = await client.read_flows(flows=FlowFilter(**filter_criteria))
         return {"flows": [flow.model_dump() for flow in flows]}
 
 
@@ -404,7 +409,9 @@ async def filter_flow_runs(
                          Example: {"flow_runs": {"state": {"type": {"any_": ["FAILED", "CRASHED"]}}}}
     """
     async with get_client() as client:
-        flow_runs = await client.read_flow_runs(filter=filter_criteria)
+        flow_runs = await client.read_flow_runs(
+            flow_runs=FlowRunFilter(**filter_criteria)
+        )
         return {"flow_runs": [run.model_dump() for run in flow_runs]}
 
 
@@ -419,7 +426,9 @@ async def filter_deployments(
                          Example: {"deployments": {"is_schedule_active": {"eq_": true}}}
     """
     async with get_client() as client:
-        deployments = await client.read_deployments(filter=filter_criteria)
+        deployments = await client.read_deployments(
+            deployments=DeploymentFilter(**filter_criteria)
+        )
         return {"deployments": [deployment.model_dump() for deployment in deployments]}
 
 
