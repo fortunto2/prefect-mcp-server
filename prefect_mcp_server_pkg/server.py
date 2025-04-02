@@ -13,8 +13,9 @@ from typing import Dict, Any, Optional
 from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
 
-from prefect_client import get_client
-from prefect_client.client import PrefectClient
+from prefect.client.orchestration import get_client
+from prefect.client.schemas.objects import Flow, FlowRun, Deployment
+
 from mcp.server.fastmcp import FastMCP, Context
 
 # Prefect API Settings
@@ -26,7 +27,7 @@ PREFECT_API_KEY = os.environ.get("PREFECT_API_KEY", "")
 @asynccontextmanager
 async def prefect_api_lifespan(
     server: FastMCP,
-) -> AsyncIterator[Dict[str, PrefectClient]]:
+) -> AsyncIterator[Dict[str, Any]]:
     """Async context manager to initialize and clean up the Prefect API client."""
     print("Initializing Prefect API Client for MCP server...", file=sys.stderr)
 
@@ -36,13 +37,8 @@ async def prefect_api_lifespan(
     if PREFECT_API_KEY:
         os.environ["PREFECT_API_KEY"] = PREFECT_API_KEY
 
-    # Create client instance on server startup using official client
-    async with get_client() as client:
-        print(f"Connected to Prefect API at {client.api_url}", file=sys.stderr)
-        # Pass the client into the server context, accessible by tools
-        yield {"prefect_client": client}
-
-    # Client is automatically closed by the context manager
+    # No need to pre-initialize the client, we will create it in each tool
+    yield {}
 
 
 # --- MCP Server Definition with FastMCP ---
@@ -62,11 +58,9 @@ async def list_flows(ctx: Context, limit: int = 20) -> Dict[str, Any]:
     Args:
         limit: Maximum number of flows to return (default 20).
     """
-    # Get client from lifespan context
-    client: PrefectClient = ctx.request_context.lifespan_context["prefect_client"]
-    # Call API client method
-    flows = await client.read_flows(limit=limit)
-    return {"flows": [flow.dict() for flow in flows]}
+    async with get_client() as client:
+        flows = await client.read_flows(limit=limit)
+        return {"flows": [flow.model_dump() for flow in flows]}
 
 
 @mcp_server.tool()
@@ -76,9 +70,9 @@ async def list_flow_runs(ctx: Context, limit: int = 20) -> Dict[str, Any]:
     Args:
         limit: Maximum number of flow runs to return (default 20).
     """
-    client: PrefectClient = ctx.request_context.lifespan_context["prefect_client"]
-    flow_runs = await client.read_flow_runs(limit=limit)
-    return {"flow_runs": [run.dict() for run in flow_runs]}
+    async with get_client() as client:
+        flow_runs = await client.read_flow_runs(limit=limit)
+        return {"flow_runs": [run.model_dump() for run in flow_runs]}
 
 
 @mcp_server.tool()
@@ -88,9 +82,9 @@ async def list_deployments(ctx: Context, limit: int = 20) -> Dict[str, Any]:
     Args:
         limit: Maximum number of deployments to return (default 20).
     """
-    client: PrefectClient = ctx.request_context.lifespan_context["prefect_client"]
-    deployments = await client.read_deployments(limit=limit)
-    return {"deployments": [deployment.dict() for deployment in deployments]}
+    async with get_client() as client:
+        deployments = await client.read_deployments(limit=limit)
+        return {"deployments": [deployment.model_dump() for deployment in deployments]}
 
 
 @mcp_server.tool()
@@ -101,10 +95,9 @@ async def filter_flows(ctx: Context, filter_criteria: Dict[str, Any]) -> Dict[st
         filter_criteria: Dictionary with filter criteria according to Prefect API.
                          Example: {"flows": {"tags": {"all_": ["production"]}}}
     """
-    client: PrefectClient = ctx.request_context.lifespan_context["prefect_client"]
-    # The official client expects filters in a specific format
-    flows = await client.read_flows(filter=filter_criteria)
-    return {"flows": [flow.dict() for flow in flows]}
+    async with get_client() as client:
+        flows = await client.read_flows(filter=filter_criteria)
+        return {"flows": [flow.model_dump() for flow in flows]}
 
 
 @mcp_server.tool()
@@ -117,9 +110,9 @@ async def filter_flow_runs(
         filter_criteria: Dictionary with filter criteria according to Prefect API.
                          Example: {"flow_runs": {"state": {"type": {"any_": ["FAILED", "CRASHED"]}}}}
     """
-    client: PrefectClient = ctx.request_context.lifespan_context["prefect_client"]
-    flow_runs = await client.read_flow_runs(filter=filter_criteria)
-    return {"flow_runs": [run.dict() for run in flow_runs]}
+    async with get_client() as client:
+        flow_runs = await client.read_flow_runs(filter=filter_criteria)
+        return {"flow_runs": [run.model_dump() for run in flow_runs]}
 
 
 @mcp_server.tool()
@@ -132,9 +125,9 @@ async def filter_deployments(
         filter_criteria: Dictionary with filter criteria according to Prefect API.
                          Example: {"deployments": {"is_schedule_active": {"eq_": true}}}
     """
-    client: PrefectClient = ctx.request_context.lifespan_context["prefect_client"]
-    deployments = await client.read_deployments(filter=filter_criteria)
-    return {"deployments": [deployment.dict() for deployment in deployments]}
+    async with get_client() as client:
+        deployments = await client.read_deployments(filter=filter_criteria)
+        return {"deployments": [deployment.model_dump() for deployment in deployments]}
 
 
 @mcp_server.tool()
@@ -147,16 +140,19 @@ async def create_flow_run(
         deployment_id: ID of the deployment to create a run for.
         parameters: Dictionary with parameters for the flow run (optional).
     """
-    client: PrefectClient = ctx.request_context.lifespan_context["prefect_client"]
-    # Check for required argument deployment_id
     if not deployment_id:
         return {"error": "Missing required argument: deployment_id"}
 
-    # Create flow run using the official client
-    flow_run = await client.create_flow_run_from_deployment(
-        deployment_id=deployment_id, parameters=parameters or {}
+    from prefect.deployments import run_deployment
+
+    # Создаем flow run с помощью функции run_deployment
+    result = await run_deployment(
+        name=deployment_id,  # В документации это "name", а не "deployment_id"
+        parameters=parameters or {},
+        timeout=0,  # Без ожидания завершения
     )
-    return flow_run.dict()
+
+    return {"flow_run_id": str(result)}
 
 
 def main_run():
