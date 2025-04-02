@@ -1,0 +1,28 @@
+[project]
+name = "prefect-mcp-server"
+version = "1.0.0"
+description = "MCP server for interacting with the Prefect API"
+authors = [
+    { name = "Your Name", email = "you@example.com" },
+]
+dependencies = [
+    "mcp[cli]", # Use the correct package name with cli extra
+    "httpx>=0.24.0",
+]
+requires-python = ">=3.10"
+readme = "README.md"
+license = { text = "MIT"}
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/prefect_mcp_server"] 

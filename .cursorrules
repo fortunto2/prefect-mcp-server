@@ -1,0 +1,18 @@
+- Start message "Hey Bro"
+- При старте диалога используй правила из .cursor/rules:
+
+- All comments, code and documentation should be written in English, even if communication is in another language, unless otherwise requested.
+- Use `uv run` for run scrits in env, check pyproject.toml
+- use Makefile for main commands: test, lint
+- for terminal commands: делай так чтоб не запрашивал дейстивия от пользователя типа скролинг : 
+
+
+## After finish case solve:
+- Run `make -C backend lint` make python changes and fix if relevant for current task
+- Check, fix `make -C backend test` and write new simple test and again check, fix
+- Run build docs and update docs if needed
+
+## Github
+
+1. Если пользователь запросит (мердж, пул реквест) или закончил работу над задачей, тогда:
+2. Создай отдельную ветку в репозитории  (если в master находишься), если уже находишься не в master то не создавай ветку или спроси
