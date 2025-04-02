@@ -57,9 +57,23 @@ uv run <script>
 
 Alternatively, if you are using the Cursor IDE with its configuration, the server will be automatically invoked with the command specified in `.cursor/mcp.json`.
 
+## Documentation
+
+Detailed documentation on the Prefect MCP Server functionality and usage is available in the [docs/prefect_mcp_documentation.md](docs/prefect_mcp_documentation.md) file. The documentation includes:
+
+- Complete list of available tools and their parameters
+- Instructions for installation and configuration
+- Examples of usage with different MCP clients
+- Prefect 3.0 compatibility information
+
+## Cursor Rules
+
+This repository includes Cursor Rules for working with the Prefect MCP Server, located in the `.cursor/rules/` directory. These rules provide contextual help and guidance when working with Prefect MCP in the Cursor IDE.
+
 ## Additional Information
 
 - For further details on Prefect installation and usage, please refer to the [Prefect Documentation](https://docs.prefect.io/).
+- For information about the Model Context Protocol (MCP), see the [MCP Documentation](https://modelcontextprotocol.io/).
 - Use `uv run` for running scripts within the configured environment as recommended by Cursor.
 
 Happy coding! 
