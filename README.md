@@ -1,4 +1,5 @@
 # Prefect MCP Server
+[![smithery badge](https://smithery.ai/badge/@fortunto2/prefect-mcp-server)](https://smithery.ai/server/@fortunto2/prefect-mcp-server)
 
 This repository provides a Prefect MCP server configuration using the `prefect-mcp-server` package with a reliable running mechanism via `uvx`. The configuration is tailored for use with the Cursor IDE.
 
@@ -10,6 +11,15 @@ This repository provides a Prefect MCP server configuration using the `prefect-m
 
 ## Installation
 
+### Installing via Smithery
+
+To install Prefect MCP Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@fortunto2/prefect-mcp-server):
+
+```bash
+npx -y @smithery/cli install @fortunto2/prefect-mcp-server --client claude
+```
+
+### Manual Installation
 Create and activate your virtual environment, then install Prefect MCP Server:
 
 ```bash
