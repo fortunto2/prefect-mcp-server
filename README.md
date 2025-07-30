@@ -2,6 +2,10 @@
 
 This repository provides a Prefect MCP server configuration using the `prefect-mcp-server` package with a reliable running mechanism via `uvx`. The configuration is tailored for use with the Cursor IDE.
 
+<a href="https://glama.ai/mcp/servers/@fortunto2/prefect-mcp-server">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@fortunto2/prefect-mcp-server/badge" alt="Prefect Server MCP server" />
+</a>
+
 ## Prerequisites
 
 - Python 3.9 or newer.
@@ -76,4 +80,4 @@ This repository includes Cursor Rules for working with the Prefect MCP Server, l
 - For information about the Model Context Protocol (MCP), see the [MCP Documentation](https://modelcontextprotocol.io/).
 - Use `uv run` for running scripts within the configured environment as recommended by Cursor.
 
-Happy coding! 
+Happy coding!
