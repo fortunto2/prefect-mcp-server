@@ -426,7 +426,8 @@ async def filter_deployments(
 
     Args:
         filter_criteria: Dictionary with filter criteria according to Prefect API.
-                         Example: {"deployments": {"is_schedule_active": {"eq_": true}}}
+                         Example1: {"deployments": {"is_schedule_active": {"eq_": true}}}
+                         Example2: {"deployments": {"tags": {"all_": ["production"]}}}
     """
     async with get_client() as client:
         deployment_filter = DeploymentFilter(**filter_criteria)
