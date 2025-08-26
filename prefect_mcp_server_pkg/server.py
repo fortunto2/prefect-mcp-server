@@ -46,7 +46,6 @@ async def prefect_api_lifespan(
 # --- MCP Server Definition with FastMCP ---
 mcp = FastMCP(
     name="prefect",  # Server name
-    version="1.0.0",  # Server version
     lifespan=prefect_api_lifespan,  # Specify the context manager
 )
 
