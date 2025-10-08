@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/fortunto2-prefect-mcp-server-badge.png)](https://mseep.ai/app/fortunto2-prefect-mcp-server)
+
 # Prefect MCP Server
 
 This repository provides a Prefect MCP server configuration using the `prefect-mcp-server` package with a reliable running mechanism via `uvx`. The configuration is tailored for use with the Cursor IDE.
