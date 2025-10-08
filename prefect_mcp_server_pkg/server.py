@@ -15,8 +15,7 @@ from collections.abc import AsyncIterator
 from uuid import UUID
 
 from prefect.client.orchestration import get_client
-from prefect.client.schemas.objects import Flow, FlowRun, Deployment
-from prefect.client.schemas.filters import FlowFilter, FlowRunFilter, DeploymentFilter
+from prefect.client.schemas.filters import FlowFilter, FlowRunFilter, DeploymentFilter, FlowFilterName
 
 from mcp.server.fastmcp import FastMCP, Context
 
@@ -46,7 +45,6 @@ async def prefect_api_lifespan(
 # --- MCP Server Definition with FastMCP ---
 mcp = FastMCP(
     name="prefect",  # Server name
-    version="1.0.0",  # Server version
     lifespan=prefect_api_lifespan,  # Specify the context manager
 )
 
@@ -86,7 +84,7 @@ async def get_flow_by_name(ctx: Context, name: str) -> Dict[str, Any]:
     async with get_client() as client:
         try:
             # Use correct flow_filter parameter
-            flow_filter = FlowFilter(name={"equals": name})
+            flow_filter = FlowFilter(name=FlowFilterName(any_=[name]))
             flows = await client.read_flows(flow_filter=flow_filter)
 
             if not flows:
@@ -428,7 +426,8 @@ async def filter_deployments(
 
     Args:
         filter_criteria: Dictionary with filter criteria according to Prefect API.
-                         Example: {"deployments": {"is_schedule_active": {"eq_": true}}}
+                         Example1: {"deployments": {"is_schedule_active": {"eq_": true}}}
+                         Example2: {"deployments": {"tags": {"all_": ["production"]}}}
     """
     async with get_client() as client:
         deployment_filter = DeploymentFilter(**filter_criteria)
