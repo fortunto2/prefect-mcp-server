@@ -43,6 +43,25 @@ Alternatively, install using [uv](https://docs.astral.sh/uv):
 uv pip install prefect-mcp-server
 ```
 
+## Building & Publishing Releases
+
+1. Update `version` in `pyproject.toml` and record notable changes in `docs/prefect_mcp_documentation.md`.
+2. Rebuild artifacts:
+   ```bash
+   make clean
+   make build
+   ls dist/
+   ```
+   The `dist/` directory should now contain a fresh `.whl` and `.tar.gz`.
+3. Upload to PyPI using Twine via uv (requires `TWINE_USERNAME`/`TWINE_PASSWORD` or an API token in `TWINE_PASSWORD`):
+   ```bash
+   uvx run twine upload dist/* --skip-existing
+   ```
+4. Verify the new version on https://pypi.org/project/prefect-mcp-server/ and install it locally to confirm:
+   ```bash
+   uv pip install --upgrade prefect-mcp-server==<new_version>
+   ```
+
 ## Getting Started
 
 ### Running the Server

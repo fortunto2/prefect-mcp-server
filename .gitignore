@@ -143,3 +143,5 @@ cython_debug/
 
 # UV cache
 .uv/ 
+.DS_Store
+.cursor/.DS_Store

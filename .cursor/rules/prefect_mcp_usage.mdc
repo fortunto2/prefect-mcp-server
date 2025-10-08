@@ -121,6 +121,6 @@ uv pip install -U prefect-mcp-server
 
 ## Further Resources
 
-- [MCP Documentation](mdc:https:/modelcontextprotocol.io)
-- [Prefect Documentation](mdc:https:/docs.prefect.io/v3)
-- [Cursor IDE Documentation](mdc:https:/docs.cursor.com) 
+- [MCP Documentation](https://modelcontextprotocol.io)
+- [Prefect Documentation](https://docs.prefect.io/v3/)
+- [Cursor IDE Documentation](https://docs.cursor.com) 

@@ -1,6 +1,6 @@
 [project]
 name = "prefect-mcp-server"
-version = "1.1.2"
+version = "1.1.3"
 description = "MCP server for interacting with the Prefect API"
 authors = [
     { name = "Rusty", email = "rust.starman@gmail.com" },
